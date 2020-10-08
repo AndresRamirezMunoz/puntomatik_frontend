@@ -1,9 +1,15 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
-import Infraccion from './components/infracciones'
+import Infraccion from './components/infraccion'
+
+import { Menubar } from 'primereact/menubar';
+
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 
 export default class App extends Component {
+
   constructor() {
     super();
     this.state = {
@@ -83,4 +89,4 @@ export default class App extends Component {
 
 }
 
-export default App;
+
