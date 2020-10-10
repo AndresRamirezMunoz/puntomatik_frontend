@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Infraccion from './components/infraccion'
+import Agente from './components/agente'
 
 import { Menubar } from 'primereact/menubar';
 
@@ -51,6 +52,7 @@ export default class App extends Component {
         <Menubar model={this.items} />
         <br />
         <Infraccion />
+        <Agente/>
       </div>
     );
   }
