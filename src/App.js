@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import './App.css';
 import Infraccion from './components/infraccion'
 import Agente from './components/agente'
+import Conductor from '/components/conductor'
 
 import { Menubar } from 'primereact/menubar';
 
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import { ConductorService } from './services/conductorService';
 
 export default class App extends Component {
 
@@ -53,6 +55,7 @@ export default class App extends Component {
         <br />
         <Infraccion />
         <Agente/>
+        <Conductor/>
       </div>
     );
   }
