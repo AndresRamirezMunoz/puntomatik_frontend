@@ -29,7 +29,6 @@ class SaldoConductor extends Component {
     }
 
     componentDidMount() {
-
     }
 
     render() {
