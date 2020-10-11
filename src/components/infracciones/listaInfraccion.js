@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { InfraccionService } from '../../services/infraccionService';
+import { InfraccionService } from '../../services/InfraccionService';
 
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
@@ -13,7 +13,7 @@ import 'primeflex/primeflex.css';
 
 class ListaInfraccion extends Component {
 
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             infracciones: []
@@ -22,19 +22,20 @@ class ListaInfraccion extends Component {
         this.priceBodyTemplate = this.priceBodyTemplate.bind(this);
     }
 
+
     componentDidMount() {
         this.infraccionService.getAll().then(data => this.setState({ infracciones: data }));
-        this.props.shareMethods(this.updateList.bind(this));
+       /* this.props.shareMethods(this.updateList.bind(this));*/
     }
 
     priceBodyTemplate(rowData) {
-        return rowData.valor.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+        return rowData.valor.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     }
     pagaBodyTemplate(rowData) {
-        return rowData.paga.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
+        return rowData.paga.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     }
 
-    render() {
+    render() {       
         const paginatorLeft = <Button type="button" icon="pi pi-refresh" className="p-button-text" />;
         const paginatorRight = <Button type="button" icon="pi pi-cloud" className="p-button-text" />;
         return (
@@ -56,9 +57,17 @@ class ListaInfraccion extends Component {
             </Panel>
         )
     }
-    updateList(){
-        this.infraccionService.getAll().then(data => this.setState({ infracciones: data }));
+    updateList() {
+        alert('llenar lista con todas las infracciones');
+        /*   this.infraccionService.getAll().then(data => this.setState({ infracciones: data }));*/
     }
+
+    updateListByConductor() {
+        alert("llenar lista con infracciones de: "+this.props.cedula);
+      /*  this.infraccionService.getConsultaByConductor(this.props.cedula).then(data => this.setState({ infracciones: data }));*/
+    }
+   
+
 }
 
 export default ListaInfraccion

@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
-import Infraccion from './components/infraccion'
-import Agente from './components/agente'
-import Conductor from './components/conductor'
-
+import Infraccion from './components/Infraccion'
+import Agente from './components/Agente'
+import Conductor from './components/Conductor'
+import Vehiculo from './components/Vehiculo'
 import { Menubar } from 'primereact/menubar';
 
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
-import { ConductorService } from './services/conductorService';
+
 
 export default class App extends Component {
 
-  
   constructor() {
     super();
     this.state = {
@@ -54,9 +53,10 @@ export default class App extends Component {
       <div>
         <Menubar model={this.items} />
         <br />
-        <Infraccion />
-        <Agente/>
-        <Conductor/>
+        {this.state.infracciones && <Infraccion />}
+        {this.state.agente && <Agente />}
+        {this.state.conductor && <Conductor />}
+        {this.state.vehiculo && <Vehiculo />}
       </div>
     );
   }
@@ -92,7 +92,4 @@ export default class App extends Component {
       vehiculo: true
     })
   }
-
 }
-
-

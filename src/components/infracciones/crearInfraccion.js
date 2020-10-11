@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { InfraccionService } from '../../services/infraccionService';
-import { AgenteService } from '../../services/agenteService';
-import { ConductorService } from '../../services/conductorService';
+import { InfraccionService } from '../../services/InfraccionService';
+import { AgenteService } from '../../services/AgenteService';
+import { ConductorService } from '../../services/ConductorService';
+
 
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
@@ -18,7 +19,6 @@ class CrearInfraccion extends Component {
 
     constructor() {
         super();
-
         this.state = {
             infraccion: {
                 "id": null,
@@ -39,7 +39,7 @@ class CrearInfraccion extends Component {
                 "direccion": null,
                 "salario": null
             }
-            
+
         };
 
         this.infraccionesSelectItems = [
@@ -56,16 +56,15 @@ class CrearInfraccion extends Component {
         this.infraccionService = new InfraccionService();
         this.agenteService = new AgenteService();
         this.conductorService = new ConductorService();
-
     }
 
     componentDidMount() {
-        this.props.shareMethods(this.save.bind(this));
     }
 
     render() {
         return (
-            <div>
+            <form id="infracion-form">
+                <br />
                 <span className="p-float-label">
                     <InputText style={{ width: "100%" }} value={this.state.infraccion.direccion} id="direccion" onChange={(e) => {
                         let val = e.target.value;
@@ -114,21 +113,19 @@ class CrearInfraccion extends Component {
                 </span>
                 <br />
                 <Messages ref={(el) => this.messages = el}></Messages>
-            </div>
+            </form>
         )
     }
 
+    saveInfraccion () {
 
-    save() {
+        document.getElementById("infracion-form").reset();
         let ccA = this.state.infraccion.cedulaAgente;
-        console.log(ccA)
         this.agenteService.findByCedula(ccA).then(data => this.setState({ agente: data }));
 
-        console.log(this.state.agente)
-
         if (this.state.agente.cedula == null) {
-            this.showWarn('La cedula ' + ccA + ' no existe');
-        } 
+            this.showWarn('La cedula del agente ' + ccA + ', no existe');
+        }
         else {
             this.infraccionService.save(this.state.infraccion).then(data => { console.log(data) });
             this.setState({

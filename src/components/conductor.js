@@ -1,44 +1,48 @@
 import React, { Component } from 'react';
-import { ConductorService } from '../services/conductorService';
-import CrearConductor from '../components/conductor/crearConductor'
+import CrearConductor from './conductor/CrearConductor'
+import SaldoConductor from './conductor/SaldoConductor'
+import ListaConductor from './conductor/ListaConductor';
 
 import { Menubar } from 'primereact/menubar';
-import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
 
 class Conductor extends Component {
 
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
-            save: false
+            cedula: null,
+            isVisibleConductor: false,
+            isVisibleFind: false,
+            isVisibleList: true,
+            isVisibleSaldo: false
         }
 
         this.items = [
             {
-                label: 'Nuevo',
-                icon: 'pi pi-fw pi-file',
-                command: () => { this.showSaveDialog() }
+                label: 'Registrar',
+                icon: 'pi pi-fw pi-plus-circle',
+                command: () => { this.setState({ isVisibleConductor: true, isVisibleFind: false, isVisibleSaldo: false }) }
             },
             {
-                label: 'Buscar por conductor',
+                label: 'Buscar',
+                icon: 'pi pi-fw pi-search',
+                command: () => { this.setState({ isVisibleList: true, isVisibleFind: true, isVisibleSaldo: false }) }
+            },
+            {
+                label: 'Consulta de saldo',
                 icon: 'pi pi-fw pi-user',
-                command: () => { this.showSearchConductorDialog() }
+                command: () => { this.setState({ isVisibleConductor: false, isVisibleFind: false, isVisibleList: false, isVisibleSaldo: true }); }
             }
         ];
 
-        this.footerSave = (
-            <div>
-                <Button label="Guardar" icon="pi pi-check" iconPos="right" 
-                onClick={() => { this.saveConductor(); this.updateList(); this.reset(); }} />
-            </div>
-        )
-
-        this.conductorService = new ConductorService();
+        this.save = React.createRef();
+        this.update = React.createRef();
     }
 
     componentDidMount() {
-        this.conductorService.getAll().then(data => this.setState({ conductores: data }));
     }
 
     render() {
@@ -46,33 +50,45 @@ class Conductor extends Component {
             <div className="card" style={{ width: '90%', marginTop: '20px', margin: '0 auto' }}>
                 <div>
                     <Menubar model={this.items} />
-                    <Dialog header="Registrar conductor" visible={this.state.save} valor={this.state.save} style={{ width: '40%' }} footer={this.footerSave} modal={true} onHide={() => this.setState({ save: false })}>
-                        <form id="conductor-form">
-                            <CrearConductor shareMethods={this.acceptMethodsCreate} />
-                        </form>
+                    <Dialog header="Registrar conductor" visible={this.state.isVisibleConductor} valor={this.state.isVisibleConductor} style={{ width: '40%' }} modal={true} onHide={() => this.setState({ isVisibleConductor: false })}>
+                        {this.state.isVisibleConductor && <CrearConductor ref={this.save} />}
+                        <Button label="Guardar" icon="pi pi-check" iconPos="right" onClick={this.saveCoductor} />
                     </Dialog>
+                    <Dialog header="Buscar conductor" visible={this.state.isVisibleFind} valor={this.state.isVisibleFind} style={{ width: '40%' }} modal={true} onHide={() => this.setState({ isVisibleFind: false })}>
+                        <br />
+                        <span className="p-float-label">
+                            <InputText style={{ width: "100%" }} value={this.state.cedula} id="cedula" onChange={(e) => {
+                                let val = e.target.value;
+                                this.setState(prevState => {
+                                    let cedula = Object.assign({}, prevState.conductor);
+                                    cedula = val;
+                                    return { cedula };
+                                })
+                            }} />
+                            <label htmlFor="cedula">Cedula</label>
+                        </span>
+                        <br />
+                        <Button label="Buscar" icon="pi pi-check" iconPos="right" onClick={this.findConductor} />
+                    </Dialog>
+                    {this.state.isVisibleList && <ListaConductor ref={this.update} cedula={this.state.cedula} />}
+                    {this.state.isVisibleSaldo && <SaldoConductor visible={this.state.isVisibleConductor}/>}
                 </div>
-            </div>
+            </div >
         );
     }
 
-    showSaveDialog() {
-        this.setState({
-            save: true
-        })
+    saveCoductor = () => {
+        this.save.current.save()
+        this.update.current.updateList()
     }
+    findConductor = () => {
+        if (this.state.cedula) {
+            this.update.current.updateListByConductor()
+        }
 
-    reset() {
-        document.getElementById("conductor-form").reset();
     }
-    acceptMethodsCreate = (save) => {
-        this.saveConductor = save;
-    };
-/**falta este metodo */
-    acceptMethodsList = (update) => {
-        this.updateList = update;
-    };
 }
+
 
 
 export default Conductor
