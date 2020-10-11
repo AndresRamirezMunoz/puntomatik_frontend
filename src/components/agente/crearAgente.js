@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AgenteService } from '../../services/agenteService';
+import { AgenteService } from '../../services/AgenteService';
 import { InputText } from 'primereact/inputtext';
 
 class CrearAgente extends Component {
@@ -20,12 +20,11 @@ class CrearAgente extends Component {
     }
 
     componentDidMount() {
-        this.props.shareMethods(this.save.bind(this));
     }
 
     render() {
         return (
-            <div>
+            <form id='crearAgente-form'>
                 <br />
                 <span className="p-float-label">
                     <InputText style={{ width: "100%" }} value={this.state.agente.cedula} id="cedula" onChange={(e) => {
@@ -34,9 +33,7 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.cedula = val;
                             return { agente };
-                        })
-                    }} />
-                    <label htmlFor="cedula">Cedula</label>
+                        })}} /><label htmlFor="cedula">Cedula</label>
                 </span>
                 <br />
                 <span className="p-float-label">
@@ -46,9 +43,7 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.nombre = val;
                             return { agente };
-                        })
-                    }} />
-                    <label htmlFor="nombre">Nombre</label>
+                        })}} /><label htmlFor="nombre">Nombre</label>
                 </span>
                 <br />
                 <span className="p-float-label">
@@ -58,9 +53,7 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.apellido = val;
                             return { agente };
-                        })
-                    }} />
-                    <label htmlFor="apellido">Apellido</label>
+                        })}} /><label htmlFor="apellido">Apellido</label>
                 </span>
                 <br />
                 <span className="p-float-label">
@@ -70,9 +63,7 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.direccion = val;
                             return { agente };
-                        })
-                    }} />
-                    <label htmlFor="direccion">Direccion</label>
+                        })}} /><label htmlFor="direccion">Direccion</label>
                 </span>
                 <br />
                 <span className="p-float-label">
@@ -82,9 +73,7 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.salario = val;
                             return { agente };
-                        })
-                    }} />
-                    <label htmlFor="salario">Salario</label>
+                        })}} /><label htmlFor="salario">Salario</label>
                 </span>
                 <br />
                 <span className="p-float-label">
@@ -94,16 +83,15 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.telefono = val;
                             return { agente };
-                        })
-                    }} />
-                    <label htmlFor="telefono">Telefono</label>
+                        })}} /><label htmlFor="telefono">Telefono</label>
                 </span>
-            </div>
+                <br />
+            </form>
         )
     }
 
     save() {
-        console.log('crear agente')
+        alert('crear agente')
     }
 }
 

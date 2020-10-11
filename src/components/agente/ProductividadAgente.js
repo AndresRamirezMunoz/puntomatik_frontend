@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { InfraccionService } from '../../services/infraccionService';
+import { InfraccionService } from '../../services/InfraccionService';
 
 import { Panel } from 'primereact/panel';
 import { InputText } from 'primereact/inputtext';
@@ -34,7 +34,7 @@ class ProductividadAgente extends Component {
 
     render() {
         return (
-            <Panel header="Productividad" visible={this.state.agente} style={{ width: '100%' }} footer={this.footerAgente} modal={true} onHide={() => this.setState({ agente: false })}>
+            <Panel header="Productividad"  style={{ width: '100%' }} footer={this.footerAgente} modal={true} onHide={() => this.setState({ agente: false })}>
 
                 <div className="p-grid">
                     <div className="p-col">

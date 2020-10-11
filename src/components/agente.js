@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import { AgenteService } from '../services/agenteService';
+import { AgenteService } from '../services/AgenteService';
 import ProductividadAgente from './agente/ProductividadAgente'
-import CrearAgente from './agente/crearAgente'
+import CrearAgente from './agente/CrearAgente'
+import ListaAgente from './agente/ListaAgente'
 
 import { Menubar } from 'primereact/menubar';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Panel } from 'primereact/panel';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
-
-
+import { InputText } from 'primereact/inputtext';
 
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
@@ -23,25 +20,29 @@ class Agente extends Component {
         this.state = {
             save: false,
             productividad: false,
-            cedulaA: null,
+            isVisibleFind: false,
+            cedula: null,
         }
-        this.footerSave = (
-            <div>
-                <Button label="Gurdar" icon="pi pi-check" iconPos="right"  onClick={() => { this.saveAgente();}}/>
-            </div>
-        )
+
         this.items = [
             {
-                label: 'Nuevo',
-                icon: 'pi pi-fw pi-file',
-                command: () => { this.showSaveDialog() }
+                label: 'Registrar',
+                icon: 'pi pi-fw pi-plus-circle',
+                command: () => { this.setState({ save: true, productividad: false }) }
+            },
+            {
+                label: 'Buscar',
+                icon: 'pi pi-fw pi-search',
+                command: () => { this.setState({ productividad: false,isVisibleFind: true  }) }
             },
             {
                 label: 'Productividad',
                 icon: 'pi pi-fw pi-user',
-                command: () => { this.showPructividad() }
+                command: () => { this.setState({ save: false, productividad: true }) }
             }
         ];
+        this.saveAgent = React.createRef();
+        this.listAgent = React.createRef();
         this.agenteService = new AgenteService();
     }
 
@@ -50,49 +51,46 @@ class Agente extends Component {
     }
 
     render() {
-        const paginatorLeft = <Button type="button" icon="pi pi-refresh" className="p-button-text" />;
-        const paginatorRight = <Button type="button" icon="pi pi-cloud" className="p-button-text" />;
+
         return (
             <div className="card" style={{ width: '90%', marginTop: '20px', margin: '0 auto' }}>
-                <div>
-                    <Menubar model={this.items}/>
-                    {this.state.productividad && < ProductividadAgente />}
-                    <Dialog header="Registrar agente" visible={this.state.save} style={{ width: '40%' }} footer={this.footerSave} modal={true} onHide={() => this.setState({ save: false })}>
-                        <form id='creargente-form'>
-                            {this.state.save && <CrearAgente shareMethods={this.acceptMethodsCreate} />}
-                        </form>
+                    <Menubar model={this.items} />
+                    <Dialog header="Registrar agente" visible={this.state.save} style={{ width: '40%' }} modal={true} onHide={() => this.setState({ save: false })}>
+                        <CrearAgente ref={this.saveAgent} />
+                        <Button label="Gurdar" icon="pi pi-check" iconPos="right" onClick={this.save} />
                     </Dialog>
-                </div>
-                <div>
-                    <Panel header="Agentes">
-                        <DataTable value={this.state.agentes} paginator
-                            paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" rows={20} rowsPerPageOptions={[10, 20, 50]}
-                            paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}>
-                            <Column field="cedula" header="Cedula"></Column>
-                            <Column field="nombre" header="Nombre"></Column>
-                            <Column field="apellido" header="Apellido"></Column>
-                            <Column field="direccion" header="Direccion"></Column>
-                            <Column field="salario" header="Salario"></Column>
-                            <Column field="telefono" header="Telefono"></Column>
-                        </DataTable>
-                    </Panel>
-                </div>
+                    {this.state.productividad && < ProductividadAgente />}
+                    <Dialog header="Buscar agente" visible={this.state.isVisibleFind} valor={this.state.isVisibleFind} style={{ width: '40%' }} modal={true} onHide={() => this.setState({ isVisibleFind: false })}>
+                        <br />
+                        <span className="p-float-label">
+                            <InputText style={{ width: "100%" }} value={this.state.cedula} id="cedula" onChange={(e) => {
+                                let val = e.target.value;
+                                this.setState(prevState => {
+                                    let cedula = Object.assign({}, prevState.conductor);
+                                    cedula = val;
+                                    return { cedula };
+                                })
+                            }} />
+                            <label htmlFor="cedula">Cedula</label>
+                        </span>
+                        <br />
+                        <Button label="Buscar" icon="pi pi-check" iconPos="right" onClick={this.findAgente} />
+                    </Dialog>
+                    <ListaAgente ref={this.listAgent} cedula={this.state.cedula}/>
             </div>
         )
     }
-
-    showSaveDialog() {
-        this.setState({ save: true })
+    
+    findAgente = () => {
+        if (this.state.cedula) {
+            this.listAgent.current.updateListByAgente()
+        }
     }
-    showPructividad() {
-        this.setState({ productividad: true })
-    }
 
-    acceptMethodsCreate = (save) => {
-        // Parent stores the method that the child passed
-        this.saveAgente = save;
-    };
+    save = () => {
+        this.saveAgent.current.save()
+        this.listAgent.current.updateList()
+    }
 }
 
 export default Agente
