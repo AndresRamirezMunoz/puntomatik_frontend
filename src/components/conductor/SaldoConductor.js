@@ -13,7 +13,7 @@ class SaldoConductor extends Component {
     constructor() {
         super();
         this.state = {
-            cedula: null,
+            cedula: "",
             isVisibleConductor: false,
             isVisiblePanel: false,
             conductor: {
@@ -30,13 +30,14 @@ class SaldoConductor extends Component {
     }
 
     componentDidMount() {
-     }
+    }
 
     render() {
 
         return (
             <div>
-                { this.state.isVisiblePanel &&  <Panel header="Buscar saldo conductor" style={{ width: '100%' }} modal={true}   >
+                { this.state.isVisiblePanel && <Panel style={{ width: '100%' }} modal={true}   >
+                    <h4>{this.state.conductor.nombre} {this.state.conductor.apellido}, total puntos: {this.state.conductor.puntos}</h4>
                     <Dialog header="Buscar conductor" visible={this.state.isVisibleConductor} style={{ width: '40%' }} modal={true} onHide={() => this.setState({ isVisibleConductor: false })}>
                         <br />
                         <form id='form-cedula'>
@@ -68,9 +69,13 @@ class SaldoConductor extends Component {
     searchDriver = () => {
 
         if (this.state.cedula) {
-            document.getElementById('form-cedula').reset();
-            this.list.current.updateListByConductor()
-            this.setState({ cedula: null });
+            this.showSuccess("Busqueda aceptada!")
+            setTimeout(function () { //Start the timer  
+                this.list.current.updateListByConductor()
+                this.conductorService.findByCedulaOne(this.state.cedula).then(data => this.setState({ conductor: data }));
+                document.getElementById('form-cedula').reset();
+                this.setState({ cedula: null, isVisibleConductor: false });
+            }.bind(this), 1000)
         }
         else {
             this.showWarn("Ingrese una cedula!");
@@ -80,9 +85,30 @@ class SaldoConductor extends Component {
     showWarn(text) {
         this.messages.show({ severity: 'warn', detail: text });
     }
-    isVisible(value) {
-        this.setState({ isVisibleConductor: value,isVisiblePanel: value })
+    showSuccess(msm) {
+        this.messages.show({ severity: 'success', summary: msm });
     }
+    isVisible(value) {
+        this.setState({ isVisibleConductor: value, isVisiblePanel: value })
+    }
+
+    isEmpty(obj) {
+
+        if (obj == null) return true;
+
+        if (obj.length > 0) return false;
+        if (obj.length === 0) return true;
+
+        if (typeof obj !== "object") return true;
+
+        for (var key in obj) {
+            if (hasOwnProperty.call(obj, key)) return false;
+        }
+
+        return true;
+    }
+
+
 
 }
 export default SaldoConductor
