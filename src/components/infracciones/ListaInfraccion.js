@@ -24,8 +24,7 @@ class ListaInfraccion extends Component {
 
 
     componentDidMount() {
-        this.infraccionService.getAll().then(data => this.setState({ infracciones: data }));
-       /* this.props.shareMethods(this.updateList.bind(this));*/
+
     }
 
     priceBodyTemplate(rowData) {
@@ -35,7 +34,7 @@ class ListaInfraccion extends Component {
         return rowData.paga.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     }
 
-    render() {       
+    render() {
         const paginatorLeft = <Button type="button" icon="pi pi-refresh" className="p-button-text" />;
         const paginatorRight = <Button type="button" icon="pi pi-cloud" className="p-button-text" />;
         return (
@@ -58,15 +57,37 @@ class ListaInfraccion extends Component {
         )
     }
     updateList() {
-        alert('llenar lista con todas las infracciones');
-        /*   this.infraccionService.getAll().then(data => this.setState({ infracciones: data }));*/
+        this.infraccionService.getAll().then(data => this.setState({ infracciones: data }));
     }
 
     updateListByConductor() {
-        alert("llenar lista con infracciones de: "+this.props.cedula);
-      /*  this.infraccionService.getConsultaByConductor(this.props.cedula).then(data => this.setState({ infracciones: data }));*/
+        this.infraccionService.getConsultaByConductor(this.props.cedula).then(data => this.setState({ infracciones: data }));
     }
-   
+
+    updateListByDateRange() {
+        let consulta=this.props.data;
+        if (!this.isEmpty(consulta)) {
+            this.infraccionService.getConsultaByDateRange(consulta).then(data => this.setState({ infracciones: data }));
+        }
+    }
+
+    isEmpty(obj) {
+
+        if (obj == null) return true;
+
+        if (obj > 0) return false;
+        if (obj === 0) return true;
+        if (obj === undefined) return true;
+        if (obj.length > 0) return false;
+
+        if (typeof obj !== "object") return true;
+
+        for (var key in obj) {
+            if (hasOwnProperty.call(obj, key)) return false;
+        }
+        return true;
+    }
+
 
 }
 

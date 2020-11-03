@@ -26,9 +26,13 @@ class Infraccion extends Component {
             }
         ];
         this.saveInfraccion = React.createRef();
+        this.listInfraccion = React.createRef();
     }
 
     componentDidMount() {
+        if(this.listInfraccion.current!=null){
+            this.listInfraccion.current.updateList()
+        }
     }
 
     render() {
@@ -40,15 +44,21 @@ class Infraccion extends Component {
                         <CrearInfraccion ref={this.saveInfraccion} />
                         <Button label="Guardar" icon="pi pi-check" iconPos="right" onClick={this.save} />
                     </Dialog>
-                    <ListaInfraccion />
+                    <ListaInfraccion ref={this.listInfraccion} />
                 </div>
             </div>
         )
     }
     save = () => {
         this.saveInfraccion.current.saveInfraccion()
+        this.listInfraccion.current.updateList()
     }
 
+    showList(){
+        this.listInfraccion.current.updateList()
+    }
+
+    
 }
 
 export default Infraccion

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { ConductorService } from '../../services/ConductorService';
 import { InputText } from 'primereact/inputtext';
+import { Messages } from 'primereact/messages';
+
 
 class CrearConductor extends Component {
 
@@ -10,25 +12,26 @@ class CrearConductor extends Component {
 
         this.state = {
             conductor: {
-                "cedula": null,
-                "nombre": null,
-                "apellido": null,
-                "direccion": null,
-                "puntos": null,
-                "telefono": null
+                "cedula": "",
+                "nombre": "",
+                "apellido": "",
+                "direccion": "",
+                "puntos": "",
+                "telefono": ""
             }
         }
         this.conductorService = new ConductorService();
     }
 
     componentDidMount() {
-
+        if (!this.isEmpty(this.props.data)) {
+            this.conductorService.findByCedulaOne(this.props.data).then(data => { this.setState({ conductor: data }) });
+        }
     }
 
     render() {
         return (
             <div>
-
                 <form id="conductor-form">
                     <br />
                     <span className="p-float-label">
@@ -91,6 +94,7 @@ class CrearConductor extends Component {
                         <label htmlFor="telefono">Telefono</label>
                     </span>
                     <br />
+                    <Messages ref={(el) => this.messages = el}></Messages>
                 </form>
             </div>
         )
@@ -98,19 +102,52 @@ class CrearConductor extends Component {
 
 
     save() {
-        alert('Registrar conductor')
-        /*this.conductorService.save(this.state.conductor).then(data => { console.log(data) });*/
+
+        this.conductorService.save(this.state.conductor).then(data => { console.log(data) });
+        this.showSuccess('Registro exitoso!');
         document.getElementById('conductor-form').reset();
         this.setState({
             conductor: {
-                "cedula": null,
-                "nombre": null,
-                "apellido": null,
-                "direccion": null,
-                "puntos": null,
-                "telefono": null
+                "cedula": "",
+                "nombre": "",
+                "apellido": "",
+                "direccion": "",
+                "puntos": "",
+                "telefono": ""
             }
         });
+    }
+
+    showSuccess(msm) {
+        this.messages.show({ severity: 'success', summary: msm });
+    }
+    showWarn(msm) {
+        this.messages.show({ severity: 'warn', summary: msm });
+    }
+    
+    isEmpty(obj) {
+
+        // null and undefined are "empty"
+        if (obj == null) return true;
+
+        // Assume if it has a length property with a non-zero value
+        // that that property is correct.
+        if (obj > 0) return false;
+        if (obj === 0) return true;
+        if(obj===undefined) return true;
+
+        // If it isn't an object at this point
+        // it is empty, but it can't be anything *but* empty
+        // Is it empty?  Depends on your application.
+        if (typeof obj !== "object") return true;
+
+        // Otherwise, does it have any properties of its own?
+        // Note that this doesn't handle
+        // toString and valueOf enumeration bugs in IE < 9
+        for (var key in obj) {
+            if (hasOwnProperty.call(obj, key)) return false;
+        }
+        return true;
     }
 
 }

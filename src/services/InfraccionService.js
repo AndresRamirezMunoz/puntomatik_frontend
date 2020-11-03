@@ -11,12 +11,13 @@ export class InfraccionService {
     }
 
     getConsultaByConductor(cedula) {
-        return axios.get(this.baseUrl + "findByConductor/"+cedula).then(res => res.data);
+        return axios.get(this.baseUrl + "findCC/"+cedula).then(res => res.data);
     }
 
     save(infraccion){
         return axios.post(this.baseUrl+"save/", infraccion).then(res=>res.data);
     }
+
 
     
 }

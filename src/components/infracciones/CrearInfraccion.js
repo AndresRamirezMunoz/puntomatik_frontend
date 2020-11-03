@@ -117,32 +117,28 @@ class CrearInfraccion extends Component {
         )
     }
 
-    saveInfraccion () {
+    saveInfraccion() {
 
         document.getElementById("infracion-form").reset();
         let ccA = this.state.infraccion.cedulaAgente;
         this.agenteService.findByCedula(ccA).then(data => this.setState({ agente: data }));
 
-        if (this.state.agente.cedula == null) {
-            this.showWarn('La cedula del agente ' + ccA + ', no existe');
-        }
-        else {
-            this.infraccionService.save(this.state.infraccion).then(data => { console.log(data) });
-            this.setState({
-                infraccion: {
-                    "id": null,
-                    "direccion": null,
-                    "fecha": null,
-                    "descripcion": null,
-                    "valor": null,
-                    "paga": null,
-                    "puntosPerdidos": null,
-                    "cedulaConductor": null,
-                    "cedulaAgente": null
-                }
-            });
-            this.showSuccess('Registro exitoso!');
-        }
+        this.infraccionService.save(this.state.infraccion).then(data => { console.log(data) });
+        this.setState({
+            infraccion: {
+                "id": null,
+                "direccion": null,
+                "fecha": null,
+                "descripcion": null,
+                "valor": null,
+                "paga": null,
+                "puntosPerdidos": null,
+                "cedulaConductor": null,
+                "cedulaAgente": null
+            }
+        });
+        this.showSuccess('Registro exitoso!');
+
     }
 
     showSuccess(msm) {
