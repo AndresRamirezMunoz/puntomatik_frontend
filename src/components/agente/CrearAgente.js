@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { AgenteService } from '../../services/AgenteService';
 import { InputText } from 'primereact/inputtext';
+import { Messages } from 'primereact/messages';
 
 class CrearAgente extends Component {
 
@@ -8,23 +9,26 @@ class CrearAgente extends Component {
         super();
         this.state = {
             agente: {
-                "cedula": null,
-                "nombre": null,
-                "apellido": null,
-                "direccion": null,
-                "salario": null,
-                "telefono": null
+                "cedula": "",
+                "nombre": "",
+                "apellido": "",
+                "direccion": "",
+                "salario": "",
+                "telefono": ""
             }
         }
-        this.agenteServices = new AgenteService();
+        this.agenteService = new AgenteService();
     }
 
     componentDidMount() {
+        if (!this.isEmpty(this.props.data)) {
+            this.agenteService.findByCedulaOne(this.props.data).then(data => { this.setState({ agente: data }) });
+        }
     }
 
     render() {
         return (
-            <form id='crearAgente-form'>
+            <form id='agente-form'>
                 <br />
                 <span className="p-float-label">
                     <InputText style={{ width: "100%" }} value={this.state.agente.cedula} id="cedula" onChange={(e) => {
@@ -33,7 +37,8 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.cedula = val;
                             return { agente };
-                        })}} /><label htmlFor="cedula">Cedula</label>
+                        })
+                    }} /><label htmlFor="cedula">Cedula</label>
                 </span>
                 <br />
                 <span className="p-float-label">
@@ -43,7 +48,8 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.nombre = val;
                             return { agente };
-                        })}} /><label htmlFor="nombre">Nombre</label>
+                        })
+                    }} /><label htmlFor="nombre">Nombre</label>
                 </span>
                 <br />
                 <span className="p-float-label">
@@ -53,7 +59,8 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.apellido = val;
                             return { agente };
-                        })}} /><label htmlFor="apellido">Apellido</label>
+                        })
+                    }} /><label htmlFor="apellido">Apellido</label>
                 </span>
                 <br />
                 <span className="p-float-label">
@@ -63,7 +70,8 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.direccion = val;
                             return { agente };
-                        })}} /><label htmlFor="direccion">Direccion</label>
+                        })
+                    }} /><label htmlFor="direccion">Direccion</label>
                 </span>
                 <br />
                 <span className="p-float-label">
@@ -73,7 +81,8 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.salario = val;
                             return { agente };
-                        })}} /><label htmlFor="salario">Salario</label>
+                        })
+                    }} /><label htmlFor="salario">Salario</label>
                 </span>
                 <br />
                 <span className="p-float-label">
@@ -83,16 +92,55 @@ class CrearAgente extends Component {
                             let agente = Object.assign({}, prevState.agente);
                             agente.telefono = val;
                             return { agente };
-                        })}} /><label htmlFor="telefono">Telefono</label>
+                        })
+                    }} /><label htmlFor="telefono">Telefono</label>
                 </span>
                 <br />
+                <Messages ref={(el) => this.messages = el}></Messages>
             </form>
         )
     }
 
     save() {
-        alert('crear agente')
+
+        this.agenteService.save(this.state.agente).then(data => { console.log(data) });
+        this.showSuccess('Registro exitoso!');
+        document.getElementById('agente-form').reset();
+        this.setState({
+            agente: {
+                "cedula": "",
+                "nombre": "",
+                "apellido": "",
+                "direccion": "",
+                "salario": "",
+                "telefono": ""
+            }
+        });
     }
+
+    showSuccess(msm) {
+        this.messages.show({ severity: 'success', summary: msm });
+    }
+    showWarn(msm) {
+        this.messages.show({ severity: 'warn', summary: msm });
+    }
+
+    isEmpty(obj) {
+
+        if (obj == null) return true;
+
+        if (obj > 0) return false;
+        if (obj === 0) return true;
+        if (obj === undefined) return true;
+
+        if (typeof obj !== "object") return true;
+
+        for (var key in obj) {
+            if (hasOwnProperty.call(obj, key)) return false;
+        }
+        return true;
+    }
+
 }
 
 export default CrearAgente

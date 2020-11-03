@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { InfraccionService } from '../../services/InfraccionService';
+import ReactDOM from 'react-dom';
+import ListaInfraccion from '../infracciones/ListaInfraccion';
 
 import { Panel } from 'primereact/panel';
 import { InputText } from 'primereact/inputtext';
@@ -17,6 +18,7 @@ class ProductividadAgente extends Component {
     constructor() {
         super();
         this.state = {
+            consulta: "",
             cedulaC: null,
             cedulaA: null,
             dateStart: null,
@@ -24,17 +26,16 @@ class ProductividadAgente extends Component {
         };
 
         this.buscarInfraccion = this.buscarInfraccion.bind(this);
-        this.infraccionService = new InfraccionService();
+        this.lista = React.createRef();
     }
 
     componentDidMount() {
-        this.infraccionService.getAll().then(data => this.setState({ infracciones: data }));
 
     }
 
     render() {
         return (
-            <Panel header="Productividad"  style={{ width: '100%' }} footer={this.footerAgente} modal={true} onHide={() => this.setState({ agente: false })}>
+            <Panel header="Productividad" style={{ width: '100%' }} footer={this.footerAgente} modal={true} onHide={() => this.setState({ agente: false })}>
 
                 <div className="p-grid">
                     <div className="p-col">
@@ -59,17 +60,30 @@ class ProductividadAgente extends Component {
                     </div>
                     <Button label="Buscar" icon="pi pi-search" iconPos="right" onClick={this.buscarInfraccion} />
                 </div>
-
+                <ListaInfraccion ref={this.lista}  data={this.state.consulta} />
             </Panel>
 
         )
     }
 
-    buscarInfraccion() {
-        let consulta = this.state.dateStart + '#' + this.state.dateEnd + '#' + this.state.cedulaA
-        console.log(consulta)
-        this.infraccionService.getConsultaByDateRange(consulta).then(data => this.setState({ infracciones: data }));
+    buscarInfraccion = () => {
+        let inicio = this.organizarFecha(this.state.dateStart.toLocaleDateString());
+        let fin = this.organizarFecha(this.state.dateEnd.toLocaleDateString());
+        let cedula = this.state.cedulaA;
+        let myconsulta = inicio + "_" + fin + "_" + cedula;
+        this.setState({ consulta: myconsulta})
+        if (this.lista.current != null) {
+            this.lista.current.updateListByDateRange();
+        }
+    }
+
+    organizarFecha(fecha) {
+        for (let i = 0; i < 2; i++) { fecha = fecha.replace("/", "-") }
+        var divisiones = fecha.split("-", 3);
+        fecha = divisiones[2] + "-" + divisiones[1] + "-" + divisiones[0]
+        return fecha;
     }
 }
 
-export default ProductividadAgente
+export default ProductividadAgente;
+ReactDOM.render(<ListaInfraccion />, document.getElementById('root'));
