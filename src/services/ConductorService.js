@@ -10,6 +10,10 @@ export class ConductorService {
         return axios.get(this.baseUrl + "find/" + cedula).then(res => res.data);
     }
 
+    findByCedulaOne(cedula) {
+        return axios.get(this.baseUrl + "findOne/" + cedula).then(res => res.data);
+    }
+
     save(conductor) {
         return axios.post(this.baseUrl + "save/", conductor).then(res => res.data);
     }
