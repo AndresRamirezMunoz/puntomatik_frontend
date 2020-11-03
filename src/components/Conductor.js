@@ -24,22 +24,25 @@ class Conductor extends Component {
             {
                 label: 'Registrar',
                 icon: 'pi pi-fw pi-plus-circle',
-                command: () => { this.setState({ isVisibleConductor: true, isVisibleFind: false, isVisibleSaldo: false }) }
+
+                command: () => { this.visibleSaldo(false); this.setState({ isVisibleConductor: true,isVisibleList: true, isVisibleFind: false, isVisibleSaldo: false }) }
             },
             {
                 label: 'Buscar',
                 icon: 'pi pi-fw pi-search',
-                command: () => { this.setState({ isVisibleList: true, isVisibleFind: true, isVisibleSaldo: false }) }
+                command: () => { this.visibleSaldo(false); this.setState({ isVisibleList: true, isVisibleFind: true, isVisibleSaldo: false }) }
             },
             {
                 label: 'Consulta de saldo',
                 icon: 'pi pi-fw pi-user',
-                command: () => { this.setState({ isVisibleConductor: false, isVisibleFind: false, isVisibleList: false, isVisibleSaldo: true }); }
+                command: () => { this.visibleSaldo(true); this.setState({ isVisibleConductor: false, isVisibleFind: false, isVisibleList: false, isVisibleSaldo: true }); }
             }
         ];
 
         this.save = React.createRef();
         this.update = React.createRef();
+        this.updateSaldo = React.createRef();
+
     }
 
     componentDidMount() {
@@ -71,10 +74,14 @@ class Conductor extends Component {
                         <Button label="Buscar" icon="pi pi-check" iconPos="right" onClick={this.findConductor} />
                     </Dialog>
                     {this.state.isVisibleList && <ListaConductor ref={this.update} cedula={this.state.cedula} />}
-                    {this.state.isVisibleSaldo && <SaldoConductor visible={this.state.isVisibleConductor}/>}
+                    <SaldoConductor ref={this.updateSaldo} />
                 </div>
             </div >
         );
+    }
+
+    visibleSaldo = (value) => {
+        this.updateSaldo.current.isVisible(value)
     }
 
     saveCoductor = () => {
@@ -85,10 +92,7 @@ class Conductor extends Component {
         if (this.state.cedula) {
             this.update.current.updateListByConductor()
         }
-
     }
 }
-
-
 
 export default Conductor
