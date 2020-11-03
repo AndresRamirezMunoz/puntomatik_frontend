@@ -11,7 +11,8 @@ class ListaVehiculo extends Component {
     constructor() {
         super();
         this.state = {
-            vehiculo: []
+            vehiculo: [],
+            vehiculoSelected: {}
         }
 
         this.vehiculoService = new VehiculoService();
@@ -29,7 +30,7 @@ class ListaVehiculo extends Component {
                 <DataTable value={this.state.vehiculos} paginator
                     paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" rows={20} rowsPerPageOptions={[10, 20, 50]}
-                    paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}>
+                    paginatorLeft={paginatorLeft} paginatorRight={paginatorRight} selectionMode="single" selection={this.state.vehiculoSelected} onSelectionChange={e => this.setState({ vehiculoSelected: e.value })}>
                     <Column field="cilindraje" header="CC"></Column>
                     <Column field="combustible" header="Tipo motor"></Column>
                     <Column field="marca" header="Marca"></Column>
@@ -44,12 +45,20 @@ class ListaVehiculo extends Component {
         )
     }
     updateList() {
-        alert("Actualizar lista vehiculos")
-        /*     this.vehiculoService.getAll().then(data => this.setState({ vehiculos: data }));*/
+        this.vehiculoService.getAll().then(data => this.setState({ vehiculos: data }));
     }
 
-    updateByCedula() {
-        alert("Actualizar lista por cedula: "+this.props.cedula)
+    updateListByPropietario() {
+        this.vehiculoService.getConsultaByConductor(this.props.cedula).then(data => this.setState({ vehiculos: data }));
+    }
+
+    getVehiculoSelected() {
+        let vehiculo = this.state.vehiculoSelected;
+        this.setState({
+            vehiculoSelected: {}
+        })
+        return vehiculo;
     }
 }
+
 export default ListaVehiculo

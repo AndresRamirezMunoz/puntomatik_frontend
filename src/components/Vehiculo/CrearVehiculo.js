@@ -32,12 +32,14 @@ class CrearVehiculo extends Component {
     }
 
     componentDidMount() {
-
+        if (!this.isEmpty(this.props.idVehiculo)) {
+            this.vehiculoService.getConsultaByID(this.props.idVehiculo).then(data => { this.setState({ vehiculo: data }) });
+        }
     }
 
     render() {
         return (
-            <div>
+            <form id="vehiculo-form">
                 <div className="p-grid">
                     <div className="p-col-6">
                         <br />
@@ -70,7 +72,7 @@ class CrearVehiculo extends Component {
                     <div className="p-col-6">
                         <br />
                         <span className="p-float-label">
-                            <InputText style={{ width: "100%" }} value={this.state.vehiculo.combustible} id="marca" onChange={(e) => {
+                            <InputText style={{ width: "100%" }} value={this.state.vehiculo.marca} id="marca" onChange={(e) => {
                                 let val = e.target.value;
                                 this.setState(prevState => {
                                     let vehiculo = Object.assign({}, prevState.vehiculo);
@@ -84,7 +86,7 @@ class CrearVehiculo extends Component {
                     <div className="p-col-6">
                         <br />
                         <span className="p-float-label">
-                            <InputText style={{ width: "100%" }} value={this.state.vehiculo.combustible} id="modelo" onChange={(e) => {
+                            <InputText style={{ width: "100%" }} value={this.state.vehiculo.modelo} id="modelo" onChange={(e) => {
                                 let val = e.target.value;
                                 this.setState(prevState => {
                                     let vehiculo = Object.assign({}, prevState.vehiculo);
@@ -168,13 +170,14 @@ class CrearVehiculo extends Component {
                         <br />
                     </div>
                 </div>
-            </div>
+            </form>
         )
     }
 
     save() {
-        alert("Guardar vehiculo")
-
+       
+        this.vehiculoService.save(this.state.vehiculo).then(data => { console.log(data) });
+        document.getElementById("vehiculo-form").reset()
         this.setState({
             vehiculo: {
                 "id": null,
@@ -189,6 +192,22 @@ class CrearVehiculo extends Component {
                 "propiestario": null
             }
         })
+    }
+
+    isEmpty(obj) {
+
+        if (obj == null) return true;
+
+        if (obj > 0) return false;
+        if (obj === 0) return true;
+        if (obj === undefined) return true;
+
+        if (typeof obj !== "object") return true;
+
+        for (var key in obj) {
+            if (hasOwnProperty.call(obj, key)) return false;
+        }
+        return true;
     }
 }
 export default CrearVehiculo
